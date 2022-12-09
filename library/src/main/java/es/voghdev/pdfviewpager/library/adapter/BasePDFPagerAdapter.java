@@ -86,7 +86,11 @@ public class BasePDFPagerAdapter extends PagerAdapter {
     @SuppressWarnings("NewApi")
     protected void init() {
         try {
-            renderer = new PdfRenderer(getSeekableFileDescriptor(pdfPath));
+            if (pdfPath.startsWith("content://")) {
+                renderer = new PdfRenderer(context.getContentResolver().openFileDescriptor(Uri.parse(pdfPath), "r"));
+            } else {
+                renderer = new PdfRenderer(getSeekableFileDescriptor(pdfPath));
+            }
             inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             PdfRendererParams params = extractPdfParamsFromFirstPage(renderer, renderQuality);
             bitmapContainer = new SimpleBitmapPool(params);

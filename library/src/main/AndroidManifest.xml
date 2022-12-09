@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="es.voghdev.pdfviewpager.library"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="es.voghdev.pdfviewpager.library">
 
-    <application
-        android:label="@string/app_name">
+    <application>
         <service
             android:name=".service.CopyAssetService"
-            android:exported="false">
-        </service>
+            android:exported="false" />
     </application>
 
 </manifest>

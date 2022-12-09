@@ -39,6 +39,7 @@ public class PDFViewPager extends ViewPager {
         this.context = context;
         init(attrs);
         setPageTransformer(true, new VerticalPageTransformer());
+        setOverScrollMode(OVER_SCROLL_NEVER);
     }
 
     protected void init(String pdfPath) {

@@ -40,6 +40,7 @@ public class PDFViewPager extends ViewPager {
         init(attrs);
         setPageTransformer(true, new VerticalPageTransformer());
         setOverScrollMode(OVER_SCROLL_NEVER);
+        setPageMargin((int) getResources().getDimension(R.dimen.view_pager_side_margin));
     }
 
     protected void init(String pdfPath) {

@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+    android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/txt1"/>
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/txt1" />
 
-        <TextView
-            android:id="@+id/txtFlatIcon"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/flaticon_attr"
-            android:autoLink="web"/>
+    <TextView
+        android:id="@+id/txtFlatIcon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:text="@string/flaticon_attr" />
 
-        <es.voghdev.pdfviewpager.library.PDFViewPager
-            android:id="@+id/pdfViewPager"
-            android:layout_width="match_parent"
-            android:layout_height="480dp"/>
-    </LinearLayout>
-</ScrollView>
+    <es.voghdev.pdfviewpager.library.PDFViewPager
+        android:id="@+id/pdfViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="480dp" />
+</LinearLayout>

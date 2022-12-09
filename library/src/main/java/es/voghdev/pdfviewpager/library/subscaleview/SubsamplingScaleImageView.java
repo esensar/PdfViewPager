@@ -501,7 +501,6 @@ public class SubsamplingScaleImageView extends View {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
-
         if (anim != null && !anim.interruptible) {
             requestDisallowInterceptTouchEvent(true);
             return true;

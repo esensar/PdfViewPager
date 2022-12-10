@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <es.voghdev.pdfviewpager.library.PDFViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pdfViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

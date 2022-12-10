@@ -15,86 +15,126 @@
  */
 package es.voghdev.pdfviewpager.library.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.pdf.PdfRenderer;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import es.voghdev.pdfviewpager.library.R;
-import es.voghdev.pdfviewpager.library.subscaleview.ImageSource;
-import es.voghdev.pdfviewpager.library.subscaleview.SubsamplingScaleImageView;
-import es.voghdev.pdfviewpager.library.util.EmptyClickListener;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-public class PDFPagerAdapter extends BasePDFPagerAdapter {
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 
-    View.OnClickListener pageClickListener = new EmptyClickListener();
+import es.voghdev.pdfviewpager.library.PageFragment;
 
-    public PDFPagerAdapter(Context context, String pdfPath, PdfErrorHandler errorHandler) {
-        super(context, pdfPath, errorHandler);
+public class PDFPagerAdapter extends FragmentStateAdapter {
+    protected static final int FIRST_PAGE = 0;
+    protected static final float DEFAULT_QUALITY = 2.0f;
+
+    protected String pdfPath;
+    protected Context context;
+    protected PdfRenderer renderer;
+    protected BitmapContainer bitmapContainer;
+    protected LayoutInflater inflater;
+
+    protected PdfErrorHandler errorHandler = new NullPdfErrorHandler();
+
+    View.OnClickListener pageClickListener;
+
+    public PDFPagerAdapter(@NonNull FragmentActivity fragmentActivity, View.OnClickListener clickListener, String path) {
+        super(fragmentActivity);
+        context = fragmentActivity;
+        pageClickListener = clickListener;
+        pdfPath = path;
+        init();
     }
 
-    @Override
-    @SuppressWarnings("NewApi")
-    public Object instantiateItem(ViewGroup container, int position) {
-        View v = inflater.inflate(R.layout.view_pdf_page, container, false);
-        SubsamplingScaleImageView ssiv = v.findViewById(R.id.subsamplingImageView);
+    protected void init() {
+        try {
+            if (pdfPath.startsWith("content://")) {
+                renderer = new PdfRenderer(context.getContentResolver().openFileDescriptor(Uri.parse(pdfPath), "r"));
+            } else {
+                renderer = new PdfRenderer(getSeekableFileDescriptor(pdfPath));
+            }
 
-        if (renderer == null || getCount() < position) {
-            return v;
+            inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            PdfRendererParams params = extractPdfParamsFromFirstPage(renderer);
+            bitmapContainer = new SimpleBitmapPool(params);
+        } catch (IOException e) {
+            errorHandler.onPdfError(e);
+        }
+    }
+
+    protected PdfRendererParams extractPdfParamsFromFirstPage(PdfRenderer renderer) {
+        PdfRenderer.Page samplePage = getPDFPage(renderer, FIRST_PAGE);
+        PdfRendererParams params = new PdfRendererParams();
+
+        params.setWidth((int) (samplePage.getWidth() * DEFAULT_QUALITY));
+        params.setHeight((int) (samplePage.getHeight() * DEFAULT_QUALITY));
+
+        samplePage.close();
+
+        return params;
+    }
+
+    protected ParcelFileDescriptor getSeekableFileDescriptor(String path) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor;
+
+        File pdfCopy = new File(path);
+
+        if (pdfCopy.exists()) {
+            parcelFileDescriptor = ParcelFileDescriptor.open(pdfCopy, ParcelFileDescriptor.MODE_READ_ONLY);
+            return parcelFileDescriptor;
+        }
+
+        if (isAnAsset(path)) {
+            pdfCopy = new File(context.getCacheDir(), path);
+            parcelFileDescriptor = ParcelFileDescriptor.open(pdfCopy, ParcelFileDescriptor.MODE_READ_ONLY);
+        } else {
+            URI uri = URI.create(String.format("file://%s", path));
+            parcelFileDescriptor = context.getContentResolver().openFileDescriptor(Uri.parse(uri.toString()), "rw");
+        }
+
+        return parcelFileDescriptor;
+    }
+
+    protected boolean isAnAsset(String path) {
+        return !path.startsWith("/");
+    }
+
+    protected PdfRenderer.Page getPDFPage(PdfRenderer renderer, int position) {
+        return renderer.openPage(position);
+    }
+
+    @NonNull
+    @Override
+    public Fragment createFragment(int position) {
+        PageFragment fragment = new PageFragment();
+
+        if (renderer == null || getItemCount() < position) {
+            return fragment;
         }
 
         PdfRenderer.Page page = getPDFPage(renderer, position);
 
         Bitmap bitmap = bitmapContainer.get(position);
-        ssiv.setImage(ImageSource.bitmap(bitmap));
-
-        ssiv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pageClickListener.onClick(v);
-            }
-        });
-
         page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
         page.close();
 
-        container.addView(v, 0);
-
-        return v;
+        fragment.setupFragment(bitmap, pageClickListener);
+        return fragment;
     }
 
     @Override
-    public void close() {
-        super.close();
-    }
-
-    public static class Builder {
-        Context context;
-        String pdfPath = "";
-        PdfErrorHandler errorHandler = new NullPdfErrorHandler();
-        View.OnClickListener pageClickListener = new EmptyClickListener();
-
-        public Builder(Context context) {
-            this.context = context;
-        }
-
-        public Builder setPdfPath(String path) {
-            this.pdfPath = path;
-            return this;
-        }
-
-        public Builder setOnPageClickListener(View.OnClickListener listener) {
-            if (listener != null) {
-                pageClickListener = listener;
-            }
-            return this;
-        }
-
-        public PDFPagerAdapter create() {
-            PDFPagerAdapter adapter = new PDFPagerAdapter(context, pdfPath, errorHandler);
-            adapter.pageClickListener = pageClickListener;
-            return adapter;
-        }
+    public int getItemCount() {
+        return renderer != null ? renderer.getPageCount() : 0;
     }
 }

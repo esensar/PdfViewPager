@@ -16,23 +16,27 @@
 package es.voghdev.pdfviewpager;
 
 import android.os.Bundle;
+import android.view.View;
 
-import es.voghdev.pdfviewpager.library.PDFViewPager;
-import es.voghdev.pdfviewpager.library.adapter.BasePDFPagerAdapter;
+import androidx.viewpager2.widget.ViewPager2;
+
 import es.voghdev.pdfviewpager.library.adapter.PDFPagerAdapter;
 
 public class MainActivity extends BaseSampleActivity {
-    PDFViewPager pdfViewPager;
-    BasePDFPagerAdapter adapter;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle(R.string.std_example);
         setContentView(R.layout.activity_main);
 
-        pdfViewPager = findViewById(R.id.pdfViewPager);
-        adapter = new PDFPagerAdapter(this, "sample.pdf");
-        pdfViewPager.setAdapter(adapter);
+        ViewPager2 pdfViewPager = findViewById(R.id.pdfViewPager);
+
+        String path = "/storage/emulated/0/Documents/doc.pdf";
+        pdfViewPager.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
+
+        View.OnClickListener clickListener = v -> {
+        };
+
+        pdfViewPager.setAdapter(new PDFPagerAdapter(this, clickListener, path));
     }
 }

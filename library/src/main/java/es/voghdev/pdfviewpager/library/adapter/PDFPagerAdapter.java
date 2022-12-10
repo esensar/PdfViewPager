@@ -15,13 +15,11 @@
  */
 package es.voghdev.pdfviewpager.library.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -36,24 +34,25 @@ import java.net.URI;
 import es.voghdev.pdfviewpager.library.PageFragment;
 
 public class PDFPagerAdapter extends FragmentStateAdapter {
-    protected static final int FIRST_PAGE = 0;
-    protected static final float DEFAULT_QUALITY = 2.0f;
+    private static final int FIRST_PAGE = 0;
+    private static final float DEFAULT_QUALITY = 2.0f;
 
-    protected String pdfPath;
-    protected Context context;
-    protected PdfRenderer renderer;
-    protected BitmapContainer bitmapContainer;
-    protected LayoutInflater inflater;
+    private final String pdfPath;
+    private final Context context;
+    private PdfRenderer renderer;
+    private BitmapContainer bitmapContainer;
+    private final int backgroundColor;
 
-    protected PdfErrorHandler errorHandler;
+    private final PdfErrorHandler errorHandler;
 
     View.OnClickListener pageClickListener;
 
-    public PDFPagerAdapter(@NonNull FragmentActivity fragmentActivity, View.OnClickListener clickListener, PdfErrorHandler errorHandler, String path) {
+    public PDFPagerAdapter(@NonNull FragmentActivity fragmentActivity, View.OnClickListener clickListener, PdfErrorHandler errorHandler, String path, int backgroundColor) {
         super(fragmentActivity);
         context = fragmentActivity;
         pageClickListener = clickListener;
         this.errorHandler = errorHandler;
+        this.backgroundColor = backgroundColor;
         pdfPath = path;
         init();
     }
@@ -66,7 +65,6 @@ public class PDFPagerAdapter extends FragmentStateAdapter {
                 renderer = new PdfRenderer(getSeekableFileDescriptor(pdfPath));
             }
 
-            inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             PdfRendererParams params = extractPdfParamsFromFirstPage(renderer);
             bitmapContainer = new SimpleBitmapPool(params);
         } catch (IOException e) {
@@ -130,7 +128,7 @@ public class PDFPagerAdapter extends FragmentStateAdapter {
         page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY);
         page.close();
 
-        fragment.setupFragment(bitmap, pageClickListener);
+        fragment.setupFragment(bitmap, pageClickListener, backgroundColor);
         return fragment;
     }
 

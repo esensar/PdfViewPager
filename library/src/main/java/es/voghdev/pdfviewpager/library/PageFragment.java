@@ -33,12 +33,14 @@ import es.voghdev.pdfviewpager.library.util.EmptyClickListener;
 public class PageFragment extends Fragment {
     ViewGroup viewGroup = null;
     Bitmap bitmap = null;
+    int backgroundColor;
     View.OnClickListener pageClickListener = new EmptyClickListener();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         viewGroup = (ViewGroup) inflater.inflate(R.layout.view_pdf_page, container, true);
+        viewGroup.setBackgroundColor(backgroundColor);
         if (bitmap != null) {
             ((ImageView) viewGroup.findViewById(R.id.imageView)).setImageBitmap(bitmap);
             SubsamplingScaleImageView scaleImageView = viewGroup.findViewById(R.id.subsamplingImageView);
@@ -48,8 +50,9 @@ public class PageFragment extends Fragment {
         return viewGroup;
     }
 
-    public void setupFragment(Bitmap bitmap, View.OnClickListener clickListener) {
+    public void setupFragment(Bitmap bitmap, View.OnClickListener clickListener, int backgroundColor) {
         this.bitmap = bitmap;
+        this.backgroundColor = backgroundColor;
         pageClickListener = clickListener;
     }
 }

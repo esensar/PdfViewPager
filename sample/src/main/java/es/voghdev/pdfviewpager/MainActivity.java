@@ -15,6 +15,7 @@
  */
 package es.voghdev.pdfviewpager;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
@@ -41,6 +42,6 @@ public class MainActivity extends BaseSampleActivity {
         PdfErrorHandler errorHandler = throwable -> {
         };
 
-        pdfViewPager.setAdapter(new PDFPagerAdapter(this, clickListener, errorHandler, path));
+        pdfViewPager.setAdapter(new PDFPagerAdapter(this, clickListener, errorHandler, path, Color.WHITE));
     }
 }

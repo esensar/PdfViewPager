@@ -21,6 +21,7 @@ import android.view.View;
 import androidx.viewpager2.widget.ViewPager2;
 
 import es.voghdev.pdfviewpager.library.adapter.PDFPagerAdapter;
+import es.voghdev.pdfviewpager.library.adapter.PdfErrorHandler;
 
 public class MainActivity extends BaseSampleActivity {
     @Override
@@ -34,9 +35,12 @@ public class MainActivity extends BaseSampleActivity {
         String path = "/storage/emulated/0/Documents/doc.pdf";
         pdfViewPager.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
 
-        View.OnClickListener clickListener = v -> {
+        View.OnClickListener clickListener = view -> {
         };
 
-        pdfViewPager.setAdapter(new PDFPagerAdapter(this, clickListener, path));
+        PdfErrorHandler errorHandler = throwable -> {
+        };
+
+        pdfViewPager.setAdapter(new PDFPagerAdapter(this, clickListener, errorHandler, path));
     }
 }

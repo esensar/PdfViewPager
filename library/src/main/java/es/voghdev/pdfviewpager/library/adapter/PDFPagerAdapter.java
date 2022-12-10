@@ -45,14 +45,15 @@ public class PDFPagerAdapter extends FragmentStateAdapter {
     protected BitmapContainer bitmapContainer;
     protected LayoutInflater inflater;
 
-    protected PdfErrorHandler errorHandler = new NullPdfErrorHandler();
+    protected PdfErrorHandler errorHandler;
 
     View.OnClickListener pageClickListener;
 
-    public PDFPagerAdapter(@NonNull FragmentActivity fragmentActivity, View.OnClickListener clickListener, String path) {
+    public PDFPagerAdapter(@NonNull FragmentActivity fragmentActivity, View.OnClickListener clickListener, PdfErrorHandler errorHandler, String path) {
         super(fragmentActivity);
         context = fragmentActivity;
         pageClickListener = clickListener;
+        this.errorHandler = errorHandler;
         pdfPath = path;
         init();
     }

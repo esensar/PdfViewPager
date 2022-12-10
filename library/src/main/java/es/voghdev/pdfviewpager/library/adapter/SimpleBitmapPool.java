@@ -23,13 +23,13 @@ public class SimpleBitmapPool implements BitmapContainer {
 
     Bitmap[] bitmaps;
 
-    private int poolSize;
+    private final int poolSize;
 
-    private int width;
+    private final int width;
 
-    private int height;
+    private final int height;
 
-    private Bitmap.Config config;
+    private final Bitmap.Config config;
 
     private static final int DEFAULT_OFFSCREENSIZE = 1;
 
@@ -59,26 +59,6 @@ public class SimpleBitmapPool implements BitmapContainer {
     @Override
     public Bitmap get(int position) {
         return getBitmap(position);
-    }
-
-    @Override
-    public void remove(int position) {
-        bitmaps[position].recycle();
-        bitmaps[position] = null;
-    }
-
-    @Override
-    public void clear() {
-        recycleAll();
-    }
-
-    protected void recycleAll() {
-        for (int i = 0; i < poolSize; i++) {
-            if (bitmaps[i] != null) {
-                bitmaps[i].recycle();
-                bitmaps[i] = null;
-            }
-        }
     }
 
     protected void createBitmapAtIndex(int index) {

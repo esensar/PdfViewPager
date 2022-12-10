@@ -28,7 +28,7 @@ public class FileUtil {
         InputStream in = ctx.getAssets().open(assetName);
         File f = new File(destinationPath);
         f.createNewFile();
-        OutputStream out = new FileOutputStream(new File(destinationPath));
+        OutputStream out = new FileOutputStream(destinationPath);
 
         byte[] buffer = new byte[1024];
         int read;
@@ -39,9 +39,5 @@ public class FileUtil {
         out.close();
 
         return true;
-    }
-
-    public static String extractFileNameFromURL(String url) {
-        return url.substring(url.lastIndexOf('/') + 1);
     }
 }

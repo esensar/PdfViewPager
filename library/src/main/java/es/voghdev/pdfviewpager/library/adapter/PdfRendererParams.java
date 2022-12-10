@@ -43,8 +43,4 @@ public class PdfRendererParams {
     public Bitmap.Config getConfig() {
         return config;
     }
-
-    public void setConfig(Bitmap.Config config) {
-        this.config = config;
-    }
 }

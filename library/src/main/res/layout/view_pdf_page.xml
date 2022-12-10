@@ -8,12 +8,14 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@android:color/white" />
 
     <!-- Used by inheriting classes that implement zooming effect -->
     <es.voghdev.pdfviewpager.library.subscaleview.SubsamplingScaleImageView
         android:id="@+id/subsamplingImageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@android:color/white" />
 
 </FrameLayout>

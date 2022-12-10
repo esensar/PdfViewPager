@@ -166,12 +166,6 @@ public class BasePDFPagerAdapter extends PagerAdapter {
         return renderer.openPage(position);
     }
 
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        // bitmap.recycle() causes crashes if called here.
-        // All bitmaps are recycled in close().
-    }
-
     @SuppressWarnings("NewApi")
     public void close() {
         releaseAllBitmaps();

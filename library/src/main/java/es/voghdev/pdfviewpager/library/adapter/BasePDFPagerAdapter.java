@@ -37,7 +37,6 @@ import es.voghdev.pdfviewpager.library.R;
 public class BasePDFPagerAdapter extends PagerAdapter {
     protected static final int FIRST_PAGE = 0;
     protected static final float DEFAULT_QUALITY = 2.0f;
-    protected static final int DEFAULT_OFFSCREENSIZE = 1;
 
     protected String pdfPath;
     protected Context context;
@@ -45,40 +44,20 @@ public class BasePDFPagerAdapter extends PagerAdapter {
     protected BitmapContainer bitmapContainer;
     protected LayoutInflater inflater;
 
-    protected float renderQuality;
-    protected int offScreenSize;
-
     protected PdfErrorHandler errorHandler = new NullPdfErrorHandler();
 
     public BasePDFPagerAdapter(Context context, String pdfPath) {
         this.pdfPath = pdfPath;
         this.context = context;
-        this.renderQuality = DEFAULT_QUALITY;
-        this.offScreenSize = DEFAULT_OFFSCREENSIZE;
-
         init();
     }
 
     public BasePDFPagerAdapter(Context context, String pdfPath, PdfErrorHandler errorHandler) {
         this.pdfPath = pdfPath;
         this.context = context;
-        this.renderQuality = DEFAULT_QUALITY;
-        this.offScreenSize = DEFAULT_OFFSCREENSIZE;
         if (errorHandler != null) {
             this.errorHandler = errorHandler;
         }
-
-        init();
-    }
-
-    /**
-     * This constructor was added for those who want to customize ViewPager's offScreenSize attr
-     */
-    public BasePDFPagerAdapter(Context context, String pdfPath, int offScreenSize) {
-        this.pdfPath = pdfPath;
-        this.context = context;
-        this.renderQuality = DEFAULT_QUALITY;
-        this.offScreenSize = offScreenSize;
 
         init();
     }
@@ -92,7 +71,7 @@ public class BasePDFPagerAdapter extends PagerAdapter {
                 renderer = new PdfRenderer(getSeekableFileDescriptor(pdfPath));
             }
             inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            PdfRendererParams params = extractPdfParamsFromFirstPage(renderer, renderQuality);
+            PdfRendererParams params = extractPdfParamsFromFirstPage(renderer);
             bitmapContainer = new SimpleBitmapPool(params);
         } catch (IOException e) {
             errorHandler.onPdfError(e);
@@ -100,14 +79,12 @@ public class BasePDFPagerAdapter extends PagerAdapter {
     }
 
     @SuppressWarnings("NewApi")
-    protected PdfRendererParams extractPdfParamsFromFirstPage(PdfRenderer renderer, float renderQuality) {
+    protected PdfRendererParams extractPdfParamsFromFirstPage(PdfRenderer renderer) {
         PdfRenderer.Page samplePage = getPDFPage(renderer, FIRST_PAGE);
         PdfRendererParams params = new PdfRendererParams();
 
-        params.setRenderQuality(renderQuality);
-        params.setOffScreenSize(offScreenSize);
-        params.setWidth((int) (samplePage.getWidth() * renderQuality));
-        params.setHeight((int) (samplePage.getHeight() * renderQuality));
+        params.setWidth((int) (samplePage.getWidth() * DEFAULT_QUALITY));
+        params.setHeight((int) (samplePage.getHeight() * DEFAULT_QUALITY));
 
         samplePage.close();
 

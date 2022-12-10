@@ -22,8 +22,6 @@ public class PdfRendererParams {
 
     int width;
     int height;
-    float renderQuality;
-    int offScreenSize;
     Bitmap.Config config = DEFAULT_CONFIG;
 
     public int getWidth() {
@@ -40,22 +38,6 @@ public class PdfRendererParams {
 
     public void setHeight(int height) {
         this.height = height;
-    }
-
-    public float getRenderQuality() {
-        return renderQuality;
-    }
-
-    public void setRenderQuality(float renderQuality) {
-        this.renderQuality = renderQuality;
-    }
-
-    public int getOffScreenSize() {
-        return offScreenSize;
-    }
-
-    public void setOffScreenSize(int offScreenSize) {
-        this.offScreenSize = offScreenSize;
     }
 
     public Bitmap.Config getConfig() {
